@@ -1,0 +1,7 @@
+gtk+2 >= 2
+gtkmm >= 2.2
+libglade >= 2
+libxml2 >= 2.6
+lua >= 5.0.2
+mysql >= 4.0
+pcre >= 1.4
