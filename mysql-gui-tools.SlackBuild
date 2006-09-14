@@ -7,7 +7,7 @@
 . /etc/slack-package.conf
 
 NAME=mysql-gui-tools
-VERSION='5.0r2'
+VERSION='5.0r3'
 BUILD=1
 
 if [ ! -d $TMP ]; then
@@ -25,10 +25,19 @@ cd $SRC
 fix_source
 
 # Build all packages
-SUBPACKS='mysql-gui-common mysql-administrator mysql-query-browser'
+SUBPACKS='mysql-gui-common mysql-administrator mysql-query-browser mysql-workbench'
 for PACK in $SUBPACKS; do
   cd $SRC/$PACK
   case "$PACK" in
+    "mysql-gui-common")
+      CFLAGS=$SLKCFLAGS \
+      CXXFLAGS=$SLKCFLAGS \
+      ./configure --build=i486-pc-linux-gnu \
+                  --prefix=/usr \
+		  --enable-grt \
+		  --enable-canvas \
+		  --enable-java-modules
+    ;;
     "mysql-query-browser")
       CFLAGS=$SLKCFLAGS \
       CXXFLAGS=$SLKCFLAGS \
@@ -56,7 +65,7 @@ install -m 755 -d $PKG/install
 install -m 644 $CWD/slack-desc $CWD/slack-required $PKG/install
 SRCDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
 install -m 755 -d $SRCDIR
-install -m 644 $CWD/$NAME.SlackBuild $CWD/slack-desc $SRCDIR
+install -m 644 $CWD/$NAME.SlackBuild $CWD/slack-desc $CWD/slack-required $SRCDIR
 
 # Fix permissions
 chown -R root.root $PKG
