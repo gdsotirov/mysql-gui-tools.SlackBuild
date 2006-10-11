@@ -1,0 +1,10 @@
+1686,1689c1686,1689
+<   local lowestX= 9999999999.0
+<   local lowestY= 9999999999.0
+<   local highestX= 0.0
+<   local highestY= 0.0
+---
+>   local lowestX= 0
+>   local lowestY= 0
+>   local highestX= 0
+>   local highestY= 0
