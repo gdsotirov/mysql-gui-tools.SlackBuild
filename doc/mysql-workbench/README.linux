@@ -1,0 +1,34 @@
+
+Compiling Workbench from Scratch
+================================
+
+Required Software:
+------------------
+
+Much of the requirements are common for all GUI tools shipped by MySQL (such as 
+Administrator and Query Browser). Instead of building everything by hand, you
+should try using the packages supplied by your distribution, preferably using
+some tool like apt-get, smart or even yum. Do not forget that you need the -devel 
+(or -dev) version of each pacakge as well as the main one.
+
+- gtkmm-2.4 or newer and it's dependencies, such as:
+	- glibmm-2.4
+	- libsigc++-2.0
+	- gtk-2.4 (or whatever is required by gtkmm)
+- libpcre-5
+- MySQL client libraries and headers for MySQL >= 5.0
+- OpenGL libraries and headers
+- lua 5 (www.lua.org)
+
+Building:
+---------
+
+- unpack workbench
+- cd mysql-gui-common
+- ./configure --enable-grt --enable-canvas
+- make
+- make install
+- cd ../mysql-workbench
+- ./configure
+- make
+- make install

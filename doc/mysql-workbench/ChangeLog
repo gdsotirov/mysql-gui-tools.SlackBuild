@@ -1,0 +1,104 @@
+
+Changes in 1.0.7 beta
+
+All platforms
+- n:m relationships
+
+Linux
+- fixed several bugs
+- make grt shell window use a fixed width font
+
+Changes in 1.0.6 beta
+
+All platforms
+- Focus rectangle for the canvas
+- Actions with triggers for selective execution
+- Fixed problems with table subsection expansion/collapsing
+- Changed "Space selected elements" behaviour
+- Overview switching animations
+- Double clicking an object will open its editor
+- Popup menus for relationships
+- Fixed flipped relationships
+
+Linux
+- fixed layer tree display, added coloring for layer items
+- fixed keyboard handling in canvas
+- fixed crash when clicking expand/collapse too fast
+- fixed scroller behaviour
+- more compact table editor
+- fixed "blackout" bug when new views are added
+
+MacOS X
+- Universal binary support
+- Better support for Mac OS X fonts
+- fixed crash when multiple documents are opened and then closed
+- Changed Overview mode key to F6
+
+----------------------------------------------------------------------------
+Changes in 1.0.5 beta
+
+ 
+All platforms
+- Significant speed improvements in the Generic Canvas
+- Auto arrange elements
+- Markers
+- Switchable grid display
+- Complete database <-> synchronization
+- Reverse engineering is complete
+- New feature: plug-ins, which are scripts to be used for certain tasks in WB
+- DBDesigner4 import
+
+
+Windows
+- Significantly faster model load
+- Export model as image (png)
+- Printing with preview
+- Copy Region as Image
+- Full GRT integration (including tabbed shell), supported 
+  for scripting, are now: Lua, Python
+- Model properties page
+- Table options editing
+- BUG when deleting objects is still present
+
+Linux
+- Added several commands for layouting (send back/front etc)
+- Object properties tab
+
+
+----------------------------------------------------------------------------
+Changes in 1.0.3 alpha
+
+- Fixed selection deletion
+
+OS X
+
+- Fixed reverse engineering
+- Fixed crash due to missing font
+- Added schema editor
+
+---------------------------------------------------------------------------
+Changes In 1.0.2 alpha
+
+Windows
+
+The list of new features includes
+- Improved table editor
+
+The list of addressed bugs include
+- The application font is now initialized with 13
+- Added Ctrl+T for new View, Ctrl+Tab / Ctrl+Shift+T to navigate on the view tabsheets
+- Ctrl+Return can now be used in all Editors to apply changes and close the editor
+- Added missing View menu
+- Added Overview toolbar button
+- Changed toolbar icons
+
+
+OS X
+
+The list of addressed bugs include
+- Fixed object placement
+- Fixed dynamic library loading
+- Added overview mode
+- Added markers
+- Added routine group editor
+
