@@ -7,11 +7,12 @@
 . /etc/slack-package.conf
 
 NAME=mysql-gui-tools
-VERSION='5.0r3'
+VERSION='5.0r4'
+ARCH=i386
 BUILD=1
 
 if [ ! -d $TMP ]; then
-  mkdir -p $TMP # location to build the source
+  mkdir -p $TMP # location to extract the binary distribution
 fi
 
 PKG=$TMP/package-$NAME
@@ -19,67 +20,73 @@ mkdir -p $PKG
 
 # Extract the sources
 cd $TMP
-SRC=$TMP/$NAME-$VERSION
-tar -xvzf $CWD/$NAME-$VERSION.tar.gz
+SRC=$TMP/$NAME-5.0
+tar -xvzf $CWD/$NAME-$VERSION-linux-$ARCH.tar.gz
 cd $SRC
-fix_source
 
-# Build all packages
-SUBPACKS='mysql-gui-common mysql-administrator mysql-query-browser mysql-workbench'
-for PACK in $SUBPACKS; do
-  cd $SRC/$PACK
-  case "$PACK" in
-    "mysql-gui-common")
-      CFLAGS=$SLKCFLAGS \
-      CXXFLAGS=$SLKCFLAGS \
-      ./configure --build=i486-pc-linux-gnu \
-                  --prefix=/usr \
-		  --enable-grt \
-		  --enable-canvas \
-		  --enable-java-modules
-    ;;
-    "mysql-query-browser")
-      CFLAGS=$SLKCFLAGS \
-      CXXFLAGS=$SLKCFLAGS \
-     ./configure --build=$ARCH-slackware-linux \
-                 --prefix=/usr \
-		 --with-gtkhtml=libgtkhtml-2.0
-    ;;
-    *)
-      CFLAGS=$SLKCFLAGS \
-      CXXFLAGS=$SLKCFLAGS \
-      ./configure --build=$ARCH-slackware-linux \
-                  --prefix=/usr
-    ;;
-    esac
+PREFIX=/usr
+install -m 755 -d $PKG/$PREFIX
+BINPREFIX=$PREFIX/bin
+install -m 755 -d $PKG$BINPREFIX
+install -m 755 $SRC/mysql-* $SRC/mabackup $PKG/usr/bin
+LIBPREFIX=$PREFIX/lib/mysql-gui
+install -m 755 -d $PKG$LIBPREFIX
+cp -r $SRC/lib/* $PKG$LIBPREFIX
+install -m 755 -d $PKG/usr/share
+cp -r $SRC/share/* $PKG/usr/share
+install -m 755 -d $PKG/usr/share/applications
+install -m 755 $SRC/*.desktop $PKG/usr/share/applications
+install -m 755 -d $PKG/usr/doc/$NAME-$VERSION
+cp -r $CWD/doc/* $PKG/usr/doc/$NAME-$VERSION
 
-  make
-  make DESTDIR=$PKG install-strip
+# Overrwrite default application loaders
+cp $CWD/mysql-administrator $PKG/usr/bin
+cp $CWD/mysql-query-browser $PKG/usr/bin
+cp $CWD/mysql-workbench $PKG/usr/bin
 
-  # Create documents
-  create_docs $PKG $NAME-$VERSION/$PACK
-done
+# Patch some files to fix file paths
+OLDPREFIX=/opt/$NAME-5.0
+OLDLIBPREFIX=/opt/$NAME-5.0/lib
+cat $PKG/usr/lib/mysql-gui/pangorc | sed -e 's:'$OLDLIBPREFIX':'$LIBPREFIX':g' > $TMP/pangorc.tmp
+mv $TMP/pangorc.tmp $PKG/usr/lib/mysql-gui/pangorc
+cat $PKG/usr/lib/mysql-gui/pango.modules | sed -e 's:'$OLDLIBPREFIX':'$LIBPREFIX':g' > $TMP/pango.modules.tmp
+mv $TMP/pango.modules.tmp $PKG/usr/lib/mysql-gui/pango.modules
+cat $PKG/usr/lib/mysql-gui/gdk-pixbuf.loaders | sed -e 's:'$OLDLIBPREFIX':'$LIBPREFIX':g' > $TMP/gdk-pixbuf.loaders.tmp
+mv $TMP/gdk-pixbuf.loaders.tmp $PKG/usr/lib/mysql-gui/gdk-pixbuf.loaders
+cat $PKG/usr/share/applications/MySQLAdministrator.desktop | sed -e 's:'$OLDPREFIX':'$PREFIX':g' > $TMP/ma.desktop
+mv $TMP/ma.desktop $PKG/usr/share/applications/MySQLAdministrator.desktop
+cat $PKG/usr/share/applications/MySQLQueryBrowser.desktop | sed -e 's:'$OLDPREFIX':'$PREFIX':g' > $TMP/mqb.desktop
+mv $TMP/mqb.desktop $PKG/usr/share/applications/MySQLQueryBrowser.desktop
+cat $PKG/usr/share/applications/MySQLWorkbench.desktop | sed -e 's:'$OLDPREFIX':'$PREFIX':g' > $TMP/mw.desktop
+mv $TMP/mw.desktop $PKG/usr/share/applications/MySQLWorkbench.desktop
 
 # Copy service info
 install -m 755 -d $PKG/install
-install -m 644 $CWD/slack-desc $CWD/slack-required $PKG/install
+install -m 644 $CWD/slack-desc $PKG/install
 SRCDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
 install -m 755 -d $SRCDIR
-install -m 644 $CWD/$NAME.SlackBuild $CWD/slack-desc $CWD/slack-required $SRCDIR
+install -m 644 $CWD/$NAME.SlackBuild $CWD/slack-desc $SRCDIR
+install -m 644 $CWD/Workbench.lua.diff $SRCDIR
+install -m 644 $CWD/WorkbenchImport.lua.diff $SRCDIR
 
 # Fix permissions
 chown -R root.root $PKG
 bin_perms $PKG
+cd $PKG
+strip_bin
+
+# Fix some still broken files
+TMPDIR=$TMP patch $PKG/usr/share/mysql-gui/workbench/lua/Workbench.lua $CWD/Workbench.lua.diff
+TMPDIR=$TMP patch $PKG/usr/share/mysql-gui/workbench/lua/WorkbenchImport.lua $CWD/WorkbenchImport.lua.diff
 
 PKGNAME=$NAME-$VERSION-$ARCH-$BUILD$MYIN
-cd $PKG
 makepkg -l y -c n $PKG_DIR/$PKGNAME.tgz
 cd $PKG_DIR
 md5sum $PKGNAME.tgz > $PKGNAME.tgz.md5
 cp $CWD/slack-desc $PKGNAME.txt
 
 # Clean up (optionally)
-if [ "$1" = "--cleanup" ]; then
+if [ "$1" = "--clean" ]; then
   rm -rf $SRC
   rm -rf $PKG
 fi
