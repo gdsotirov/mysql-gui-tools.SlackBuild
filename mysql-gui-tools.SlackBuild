@@ -9,7 +9,7 @@
 NAME=mysql-gui-tools
 VERSION='5.0'
 RELEASE='5'
-ARCH=i386
+ARCH=${ARCH:-i386}
 BUILD=1
 
 TMP=${TMP:-/tmp}
@@ -47,8 +47,8 @@ cp $CWD/mysql-query-browser $PKG/usr/bin
 cp $CWD/mysql-workbench $PKG/usr/bin
 
 # Patch some files to fix file paths
-OLDPREFIX=/opt/$NAME-5.0
-OLDLIBPREFIX=/opt/$NAME-5.0/lib
+OLDPREFIX=/opt/$NAME-$VERSION
+OLDLIBPREFIX=/opt/$NAME-$VERSION/lib
 cat $PKG/usr/lib/mysql-gui/pangorc | sed -e 's:'$OLDLIBPREFIX':'$LIBPREFIX':g' > $TMP/pangorc.tmp
 mv $TMP/pangorc.tmp $PKG/usr/lib/mysql-gui/pangorc
 cat $PKG/usr/lib/mysql-gui/pango.modules | sed -e 's:'$OLDLIBPREFIX':'$LIBPREFIX':g' > $TMP/pango.modules.tmp
