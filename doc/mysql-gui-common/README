@@ -1,4 +1,5 @@
- 
+TAG:bundle-5.0-r6-win32
+
 MySQL GUI Common
 ----------------
 
@@ -8,3 +9,4 @@ MySQL GUI Suites in all platforms.
 
 For Linux build instructions, refer to:
 http://forge.mysql.com/wiki/Building_MySQL_GUI_Tools_on_Linux
+
