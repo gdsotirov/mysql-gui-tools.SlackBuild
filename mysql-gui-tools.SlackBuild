@@ -8,7 +8,7 @@
 
 NAME=mysql-gui-tools
 VERSION='5.0'
-RELEASE='5'
+RELEASE='6'
 ARCH=${ARCH:-i386}
 BUILD=1
 
@@ -55,11 +55,12 @@ cat $PKG/usr/lib/mysql-gui/pango.modules | sed -e 's:'$OLDLIBPREFIX':'$LIBPREFIX
 mv $TMP/pango.modules.tmp $PKG/usr/lib/mysql-gui/pango.modules
 cat $PKG/usr/lib/mysql-gui/gdk-pixbuf.loaders | sed -e 's:'$OLDLIBPREFIX':'$LIBPREFIX':g' > $TMP/gdk-pixbuf.loaders.tmp
 mv $TMP/gdk-pixbuf.loaders.tmp $PKG/usr/lib/mysql-gui/gdk-pixbuf.loaders
-cat $PKG/usr/share/applications/MySQLAdministrator.desktop | sed -e 's:'$OLDPREFIX':'$PREFIX':g' > $TMP/ma.desktop
+
+cat $PKG/usr/share/applications/MySQLAdministrator.desktop | sed -e 's:Exec='$OLDPREFIX':Exec='$BINPREFIX':g' | sed -e 's:Icon='$OLDPREFIX':Icon='$PREFIX':g' > $TMP/ma.desktop
 mv $TMP/ma.desktop $PKG/usr/share/applications/MySQLAdministrator.desktop
-cat $PKG/usr/share/applications/MySQLQueryBrowser.desktop | sed -e 's:'$OLDPREFIX':'$PREFIX':g' > $TMP/mqb.desktop
+cat $PKG/usr/share/applications/MySQLQueryBrowser.desktop | sed -e 's:Exec='$OLDPREFIX':Exec='$BINPREFIX':g' | sed -e 's:Icon='$OLDPREFIX':Icon='$PREFIX':g' > $TMP/mqb.desktop
 mv $TMP/mqb.desktop $PKG/usr/share/applications/MySQLQueryBrowser.desktop
-cat $PKG/usr/share/applications/MySQLWorkbench.desktop | sed -e 's:'$OLDPREFIX':'$PREFIX':g' > $TMP/mw.desktop
+cat $PKG/usr/share/applications/MySQLWorkbench.desktop | sed -e 's:Exec='$OLDPREFIX':Exec='$BINPREFIX':g' | sed -e 's:Icon='$OLDPREFIX':Icon='$PREFIX':g' > $TMP/mw.desktop
 mv $TMP/mw.desktop $PKG/usr/share/applications/MySQLWorkbench.desktop
 
 # Copy service info
