@@ -8,7 +8,7 @@
 
 NAME=mysql-gui-tools
 VERSION='5.0'
-RELEASE='6'
+RELEASE='8'
 ARCH=${ARCH:-i386}
 BUILD=1
 
@@ -39,7 +39,7 @@ cp -r $SRC/share/* $PKG/usr/share
 install -m 755 -d $PKG/usr/share/applications
 install -m 755 $SRC/*.desktop $PKG/usr/share/applications
 install -m 755 -d $PKG/usr/doc/$NAME-${VERSION}r$RELEASE
-cp -r $CWD/doc/* $PKG/usr/doc/$NAME-${VERSION}r$RELEASE
+cp -r --preserve=timestamps $CWD/doc/* $PKG/usr/doc/$NAME-${VERSION}r$RELEASE
 
 # Overrwrite default application loaders
 cp $CWD/mysql-administrator $PKG/usr/bin
@@ -76,13 +76,13 @@ install -m 644 $CWD/mysql-query-browser $SRCDIR
 install -m 644 $CWD/mysql-workbench $SRCDIR
 install -m 755 -d $SRCDIR/doc
 install -m 755 -d $SRCDIR/doc/mysql-gui-common
-install -m 644 $CWD/doc/mysql-gui-common/* $SRCDIR/doc/mysql-gui-common
+install -m 644 -p $CWD/doc/mysql-gui-common/* $SRCDIR/doc/mysql-gui-common
 install -m 755 -d $SRCDIR/doc/mysql-administrator
-install -m 644 $CWD/doc/mysql-administrator/* $SRCDIR/doc/mysql-administrator
+install -m 644 -p $CWD/doc/mysql-administrator/* $SRCDIR/doc/mysql-administrator
 install -m 755 -d $SRCDIR/doc/mysql-query-browser
-install -m 644 $CWD/doc/mysql-query-browser/* $SRCDIR/doc/mysql-query-browser
+install -m 644 -p $CWD/doc/mysql-query-browser/* $SRCDIR/doc/mysql-query-browser
 install -m 755 -d $SRCDIR/doc/mysql-workbench
-install -m 644 $CWD/doc/mysql-workbench/* $SRCDIR/doc/mysql-workbench
+install -m 644 -p $CWD/doc/mysql-workbench/* $SRCDIR/doc/mysql-workbench
 
 # Fix permissions
 chown -R root.root $PKG
