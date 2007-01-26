@@ -1,5 +1,6 @@
 gtk+2 >= 2
 gtkmm >= 2.2
+jre >= 1.6.0
 libglade >= 2
 libxml2 >= 2.6
 lua >= 5.0.2
