@@ -8,7 +8,7 @@
 
 NAME=mysql-gui-tools
 VERSION='5.0'
-RELEASE='8'
+RELEASE='9'
 ARCH=${ARCH:-i386}
 BUILD=1
 
@@ -30,7 +30,15 @@ PREFIX=/usr
 install -m 755 -d $PKG/$PREFIX
 BINPREFIX=$PREFIX/bin
 install -m 755 -d $PKG$BINPREFIX
-install -m 755 $SRC/mysql-* $SRC/mabackup $PKG/usr/bin
+install -m 755 $SRC/mysql-*                                    $PKG$BINPREFIX
+# Override default application loaders
+install -m 755 $CWD/mysql-administrator                        $PKG$BINPREFIX
+install -m 755 $CWD/mysql-query-browser                        $PKG$BINPREFIX
+install -m 755 $CWD/mysql-workbench                            $PKG$BINPREFIX
+install -m 755 $SRC/mabackup                                   $PKG$BINPREFIX
+install -m 755 $SRC/migration-tool-script/grtsh                $PKG$BINPREFIX
+install -m 755 $SRC/migration-tool-script/run_migration        $PKG$BINPREFIX
+install -m 755 $SRC/migration-tool-script/run_migration_simple $PKG$BINPREFIX
 LIBPREFIX=$PREFIX/lib/mysql-gui
 install -m 755 -d $PKG$LIBPREFIX
 cp -r $SRC/lib/* $PKG$LIBPREFIX
@@ -40,11 +48,15 @@ install -m 755 -d $PKG/usr/share/applications
 install -m 755 $SRC/*.desktop $PKG/usr/share/applications
 install -m 755 -d $PKG/usr/doc/$NAME-${VERSION}r$RELEASE
 cp -r --preserve=timestamps $CWD/doc/* $PKG/usr/doc/$NAME-${VERSION}r$RELEASE
+install -m 644 $PKG/usr/doc/$NAME-${VERSION}r$RELEASE/mysql-administrator/COPYING \
+               $PKG/usr/doc/$NAME-${VERSION}r$RELEASE/COPYING
 
-# Overrwrite default application loaders
-cp $CWD/mysql-administrator $PKG/usr/bin
-cp $CWD/mysql-query-browser $PKG/usr/bin
-cp $CWD/mysql-workbench $PKG/usr/bin
+# Install migration tool data
+install -m 755 -d $PKG/usr/share/mysql-gui/migration-tool
+cp -r --preserve=timestamps $SRC/migration-tool-script/java    $PKG/usr/share/mysql-gui/migration-tool
+cp -r --preserve=timestamps $SRC/migration-tool-script/lua     $PKG/usr/share/mysql-gui/migration-tool
+cp -r --preserve=timestamps $SRC/migration-tool-script/scripts $PKG/usr/share/mysql-gui/migration-tool
+cp -r --preserve=timestamps $SRC/migration-tool-script/xml     $PKG/usr/share/mysql-gui/migration-tool
 
 # Patch some files to fix file paths
 OLDPREFIX=/opt/$NAME-$VERSION
@@ -65,24 +77,8 @@ mv $TMP/mw.desktop $PKG/usr/share/applications/MySQLWorkbench.desktop
 
 # Copy service info
 install -m 755 -d $PKG/install
-install -m 644 $CWD/slack-desc $PKG/install
-SRCDIR=$PKG/usr/src/slackbuilds/$NAME-${VERSION}r$RELEASE
-install -m 755 -d $SRCDIR
-install -m 644 $CWD/$NAME.SlackBuild $CWD/slack-desc $SRCDIR
-install -m 644 $CWD/Workbench.lua.diff $SRCDIR
-install -m 644 $CWD/WorkbenchImport.lua.diff $SRCDIR
-install -m 644 $CWD/mysql-administrator $SRCDIR
-install -m 644 $CWD/mysql-query-browser $SRCDIR
-install -m 644 $CWD/mysql-workbench $SRCDIR
-install -m 755 -d $SRCDIR/doc
-install -m 755 -d $SRCDIR/doc/mysql-gui-common
-install -m 644 -p $CWD/doc/mysql-gui-common/* $SRCDIR/doc/mysql-gui-common
-install -m 755 -d $SRCDIR/doc/mysql-administrator
-install -m 644 -p $CWD/doc/mysql-administrator/* $SRCDIR/doc/mysql-administrator
-install -m 755 -d $SRCDIR/doc/mysql-query-browser
-install -m 644 -p $CWD/doc/mysql-query-browser/* $SRCDIR/doc/mysql-query-browser
-install -m 755 -d $SRCDIR/doc/mysql-workbench
-install -m 644 -p $CWD/doc/mysql-workbench/* $SRCDIR/doc/mysql-workbench
+install -m 644 $CWD/slack-desc     $PKG/install
+install -m 644 $CWD/slack-required $PKG/install
 
 # Fix permissions
 chown -R root.root $PKG
@@ -91,8 +87,35 @@ cd $PKG
 strip_bin
 
 # Fix some still broken files
-TMPDIR=$TMP patch $PKG/usr/share/mysql-gui/workbench/lua/Workbench.lua $CWD/Workbench.lua.diff
+TMPDIR=$TMP patch $PKG/usr/share/mysql-gui/workbench/lua/Workbench.lua       $CWD/Workbench.lua.diff
 TMPDIR=$TMP patch $PKG/usr/share/mysql-gui/workbench/lua/WorkbenchImport.lua $CWD/WorkbenchImport.lua.diff
+
+# Fix migration tool startup scripts
+TMPDIR=$TMP patch $PKG/usr/bin/run_migration        $CWD/run_migration.diff
+TMPDIR=$TMP patch $PKG/usr/bin/run_migration_simple $CWD/run_migration_simple.diff
+
+# Include build information
+SRCDIR=$PKG/usr/src/slackbuilds/$NAME-${VERSION}r$RELEASE
+install -m 755 -d $SRCDIR
+install -m 644 $CWD/$NAME.SlackBuild          $SRCDIR
+install -m 644 $CWD/slack-desc                $SRCDIR
+install -m 644 $CWD/slack-required            $SRCDIR
+install -m 644 $CWD/Workbench.lua.diff        $SRCDIR
+install -m 644 $CWD/WorkbenchImport.lua.diff  $SRCDIR
+install -m 644 $CWD/run_migration.diff        $SRCDIR
+install -m 644 $CWD/run_migration_simple.diff $SRCDIR
+install -m 644 $CWD/mysql-administrator       $SRCDIR
+install -m 644 $CWD/mysql-query-browser       $SRCDIR
+install -m 644 $CWD/mysql-workbench           $SRCDIR
+install -m 755 -d $SRCDIR/doc
+install -m 755 -d $SRCDIR/doc/mysql-gui-common
+install -m 644 -p $CWD/doc/mysql-gui-common/*     $SRCDIR/doc/mysql-gui-common
+install -m 755 -d $SRCDIR/doc/mysql-administrator
+install -m 644 -p $CWD/doc/mysql-administrator/*  $SRCDIR/doc/mysql-administrator
+install -m 755 -d $SRCDIR/doc/mysql-query-browser
+install -m 644 -p $CWD/doc/mysql-query-browser/*  $SRCDIR/doc/mysql-query-browser
+install -m 755 -d $SRCDIR/doc/mysql-workbench
+install -m 644 -p $CWD/doc/mysql-workbench/*      $SRCDIR/doc/mysql-workbench
 
 PKGNAME=$NAME-${VERSION}r$RELEASE-$ARCH-$BUILD$MYIN
 makepkg -l y -c n $PKG_DIR/$PKGNAME.tgz
