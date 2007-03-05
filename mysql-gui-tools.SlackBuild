@@ -8,7 +8,7 @@
 
 NAME=mysql-gui-tools
 VERSION='5.0'
-RELEASE='9'
+RELEASE='10'
 ARCH=${ARCH:-i386}
 BUILD=1
 
@@ -85,6 +85,7 @@ chown -R root.root $PKG
 bin_perms $PKG
 cd $PKG
 strip_bin
+strip_lib
 
 # Fix some still broken files
 TMPDIR=$TMP patch $PKG/usr/share/mysql-gui/workbench/lua/Workbench.lua       $CWD/Workbench.lua.diff
@@ -116,6 +117,10 @@ install -m 755 -d $SRCDIR/doc/mysql-query-browser
 install -m 644 -p $CWD/doc/mysql-query-browser/*  $SRCDIR/doc/mysql-query-browser
 install -m 755 -d $SRCDIR/doc/mysql-workbench
 install -m 644 -p $CWD/doc/mysql-workbench/*      $SRCDIR/doc/mysql-workbench
+
+# Remove some empty dirs
+rmdir $PKG/usr/share/mysql-gui/administrator/manual
+rmdir $PKG/usr/share/mysql-gui/query-browser/manual
 
 PKGNAME=$NAME-${VERSION}r$RELEASE-$ARCH-$BUILD$MYIN
 makepkg -l y -c n $PKG_DIR/$PKGNAME.tgz
