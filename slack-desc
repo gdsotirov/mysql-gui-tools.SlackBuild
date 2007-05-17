@@ -3,9 +3,9 @@ mysql-gui-tools:
 mysql-gui-tools: GUI Tools for 5.0 is a complete set of graphical applications
 mysql-gui-tools: to configure, manage and work with the MySQL server. This
 mysql-gui-tools: package includes:
-mysql-gui-tools:   * MySQL Administrator  1.2.11
-mysql-gui-tools:   * MySQL Query Browser  1.2.11
-mysql-gui-tools:   * MySQL Migration Tool 1.1.11
+mysql-gui-tools:   * MySQL Administrator  1.2.12
+mysql-gui-tools:   * MySQL Query Browser  1.2.12
+mysql-gui-tools:   * MySQL Migration Tool 1.1.12
 mysql-gui-tools:
 mysql-gui-tools: Packager: Georgi D. Sotirov <gdsotirov@dir.bg>
 mysql-gui-tools:
