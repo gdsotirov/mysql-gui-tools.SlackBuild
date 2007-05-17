@@ -8,7 +8,7 @@
 
 NAME=mysql-gui-tools
 VERSION='5.0'
-RELEASE='11'
+RELEASE='12'
 ARCH=${ARCH:-i386}
 BUILD=1
 
