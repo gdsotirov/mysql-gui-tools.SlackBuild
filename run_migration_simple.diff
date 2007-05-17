@@ -1,24 +1,18 @@
 5c5
-<     JRE_LIB_BASE="/usr/java/jdk1.6.0/jre/lib//"
+<     JRE_LIB_BASE="/usr/java/jdk1.6.0/jre/lib/i386/"
 ---
->   JRE_LIB_BASE="/usr/lib/java/lib"
-13c13,14
-< JRE_LIB_PATHS="$JRE_LIB_BASE:$JRE_LIB_BASE/server"
----
-> JRE_LIB_PATHS="$JRE_LIB_BASE:$JRE_LIB_BASE/i386/server"
+>     JRE_LIB_BASE="/usr/lib/java/lib/i386/"
+13a14
 > MYSQL_GUI_LIB_PATH=/usr/lib/mysql-gui
 15c16
 < LD_LIBRARY_PATH="java:$JRE_LIB_PATHS:$LD_LIBRARY_PATH"
 ---
 > LD_LIBRARY_PATH="java:$JRE_LIB_PATHS:$MYSQL_GUI_LIB_PATH:$LD_LIBRARY_PATH"
-18c19,24
-< export GRT_JVM_PATH="$JRE_LIB_BASE/server/libjvm.so"
+20c21,25
+< ./grtsh -x scripts/MigrationScript.lua
 ---
-> export GRT_JVM_PATH="$JRE_LIB_BASE/i386/server/libjvm.so"
-> 
 > (
 >  cd /usr/share/mysql-gui/migration-tool
 >  grtsh -x scripts/MigrationScript.lua
 > )
-20d25
-< ./grtsh -x scripts/MigrationScript.lua
+> 
