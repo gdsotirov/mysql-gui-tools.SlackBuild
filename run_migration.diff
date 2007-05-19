@@ -1,7 +1,7 @@
 5c5
-<    JRE_LIB_BASE="/usr/java/jdk1.6.0/jre/lib/i386/"
+<    JRE_LIB_BASE="/usr/java/jdk1.6.0/jre/lib/amd64/"
 ---
->    JRE_LIB_BASE="/usr/lib/java/lib/i386/"
+>    JRE_LIB_BASE="/usr/lib/java/lib/amd64/"
 13a14
 > MYSQL_GUI_LIB_PATH=/usr/lib/mysql-gui
 16c17
