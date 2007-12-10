@@ -1,0 +1,74 @@
+diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/configure.in mysql-gui-tools-5.0r12/mysql-gui-common/configure.in
+--- mysql-gui-tools-5.0r12-orig/mysql-gui-common/configure.in	2007-03-29 17:46:22.000000000 +0300
++++ mysql-gui-tools-5.0r12/mysql-gui-common/configure.in	2007-12-11 01:05:15.000000000 +0200
+@@ -165,11 +165,11 @@
+ 	[LUA_CFLAGS=-I$withval])
+ AC_ARG_WITH(lua-libs,
+ [  --with-lua-libs              directory where Lua libraries are located],
+-        [LUA_LDFLAGS="$withval -llua -llualib"])
++        [LUA_LDFLAGS=-Wl,-rpath,$withval -L$withval -llua])
+ 
+ if test x"$LUA_CFLAGS$LUA_LDFLAGS" = "x"; then
+-  AC_CHECK_PROG(LUA_CFLAGS,lua-config,`lua-config --include`)
+-  AC_CHECK_PROG(LUA_LDFLAGS,lua-config,`lua-config --libs`)
++  AC_CHECK_PROG(LUA_CFLAGS,lua,`pkg-config lua --cflags`)
++  AC_CHECK_PROG(LUA_LDFLAGS,lua,`pkg-config lua --libs`)
+ fi
+ 
+ if test x"$LUA_LDFLAGS" = "x"; then
+@@ -336,7 +336,9 @@
+   if (pcre_compile("(?:\\\\pL(?:\\\\pL|\\\\pN|\\\\pM|\\\\p{Pc}|\\\\p{Pd}|\\\\pS}|_)*)", PCRE_UTF8, &err, &o, NULL)) 
+     return 0;
+   return 1;
+-])], [HAVE_UNICODE_PCRE=1 AC_MSG_RESULT(yes)], [HAVE_UNICODE_PCRE=0 AC_MSG_RESULT(no)])
++])], [HAVE_UNICODE_PCRE=1
++AC_MSG_RESULT(yes)], [HAVE_UNICODE_PCRE=0
++AC_MSG_RESULT(no)])
+ CPPFLAGS=$ac_savecpp
+ LIBS=$ac_savelibs
+ AC_DEFINE(HAVE_UNICODE_PCRE, [], [whether pcre was compiled with unicode properties support])
+diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c
+--- mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c	2006-03-02 22:48:20.000000000 +0200
++++ mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c	2007-12-11 01:05:15.000000000 +0200
+@@ -322,6 +322,16 @@
+   return res;
+ }
+ 
++// This function is not present it lua 5.1 and above
++// For more info please, visit http://lua-users.org/lists/lua-l/2006-06/msg00328.html
++LUALIB_API int luaL_findstring (const char *name, const char *const list[]) {
++  int i;
++  for (i=0; list[i]; i++)
++    if (strcmp(list[i], name) == 0)
++      return i;
++  return -1;  /* name not found */
++}
++
+ 
+ static void checkcallbacks (lua_State *L) {
+   static const char *const validkeys[] = {
+diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c
+--- mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c	2006-04-25 00:07:48.000000000 +0300
++++ mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c	2007-12-11 01:05:15.000000000 +0200
+@@ -39,7 +39,6 @@
+         { "string",     luaopen_string },
+         { "math",       luaopen_math },
+         { "debug",      luaopen_debug },
+-        { "loadlib",    luaopen_loadlib },
+         { "lxp",        luaopen_lxp },
+         { NULL,         NULL }
+ };
+diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-query-browser/source/linux/MQQueryDispatcher.cc mysql-gui-tools-5.0r12/mysql-query-browser/source/linux/MQQueryDispatcher.cc
+--- mysql-gui-tools-5.0r12-orig/mysql-query-browser/source/linux/MQQueryDispatcher.cc	2007-04-27 16:11:32.000000000 +0300
++++ mysql-gui-tools-5.0r12/mysql-query-browser/source/linux/MQQueryDispatcher.cc	2007-12-11 01:05:15.000000000 +0200
+@@ -558,8 +558,8 @@
+ 
+   Gtk::Main::instance()->run();
+ 
+-  while(!req->is_complete())
+-    ;
++  //while(!req->is_complete())
++  //  ;
+ 
+   return sps;
+ }
