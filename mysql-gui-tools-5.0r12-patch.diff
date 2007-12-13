@@ -1,6 +1,6 @@
 diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/configure.in mysql-gui-tools-5.0r12/mysql-gui-common/configure.in
 --- mysql-gui-tools-5.0r12-orig/mysql-gui-common/configure.in	2007-03-29 17:46:22.000000000 +0300
-+++ mysql-gui-tools-5.0r12/mysql-gui-common/configure.in	2007-12-11 01:05:15.000000000 +0200
++++ mysql-gui-tools-5.0r12/mysql-gui-common/configure.in	2007-12-13 21:23:58.000000000 +0200
 @@ -165,11 +165,11 @@
  	[LUA_CFLAGS=-I$withval])
  AC_ARG_WITH(lua-libs,
@@ -29,7 +29,7 @@ diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/configure.in mysql-gui
  AC_DEFINE(HAVE_UNICODE_PCRE, [], [whether pcre was compiled with unicode properties support])
 diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c
 --- mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c	2006-03-02 22:48:20.000000000 +0200
-+++ mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c	2007-12-11 01:05:15.000000000 +0200
++++ mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/lxp/lxplib.c	2007-12-13 21:30:53.000000000 +0200
 @@ -322,6 +322,16 @@
    return res;
  }
@@ -47,9 +47,20 @@ diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtim
  
  static void checkcallbacks (lua_State *L) {
    static const char *const validkeys[] = {
+@@ -334,9 +344,7 @@
+   lua_pushnil(L);
+   while (lua_next(L, 1)) {
+     lua_pop(L, 1);  /* remove value */
+-    if (lua_type(L, -1) != LUA_TSTRING ||
+-        luaL_findstring(lua_tostring(L, -1), validkeys) < 0)
+-      luaL_error(L, "invalid key `%s' in callback table", lua_tostring(L, -1));
++    luaL_checkoption(L, -1, NULL, validkeys);
+   }
+ }
+ 
 diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c
 --- mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c	2006-04-25 00:07:48.000000000 +0300
-+++ mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c	2007-12-11 01:05:15.000000000 +0200
++++ mysql-gui-tools-5.0r12/mysql-gui-common/library/generic-runtime/source/myx_grt_lua.c	2007-12-13 21:23:58.000000000 +0200
 @@ -39,7 +39,6 @@
          { "string",     luaopen_string },
          { "math",       luaopen_math },
@@ -60,7 +71,7 @@ diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-gui-common/library/generic-runtim
  };
 diff -U 3 -r mysql-gui-tools-5.0r12-orig/mysql-query-browser/source/linux/MQQueryDispatcher.cc mysql-gui-tools-5.0r12/mysql-query-browser/source/linux/MQQueryDispatcher.cc
 --- mysql-gui-tools-5.0r12-orig/mysql-query-browser/source/linux/MQQueryDispatcher.cc	2007-04-27 16:11:32.000000000 +0300
-+++ mysql-gui-tools-5.0r12/mysql-query-browser/source/linux/MQQueryDispatcher.cc	2007-12-11 01:05:15.000000000 +0200
++++ mysql-gui-tools-5.0r12/mysql-query-browser/source/linux/MQQueryDispatcher.cc	2007-12-13 21:23:59.000000000 +0200
 @@ -558,8 +558,8 @@
  
    Gtk::Main::instance()->run();
