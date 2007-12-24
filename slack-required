@@ -1,8 +1,8 @@
-gtk+2 >= 2
-gtkmm >= 2.2
+cairomm >= 1.4.6
+glibmm >= 2.12.10
+gtkmm >= 2.10.11
 jre >= 1.6.0
-libglade >= 2
-libxml2 >= 2.6
-lua >= 5.0.2
-mysql >= 4.0
-pcre >= 1.4
+libglade >= 2.6.1
+libgtkhtml >= 2.11.0
+mysql >= 5.0
+openssl >= 0.9.8e | openssl-solibs >= 0.9.8e
