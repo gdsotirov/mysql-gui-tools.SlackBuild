@@ -1,7 +1,0 @@
-
----------------------------------------------------------------------------
-Changes In 1.2.1
-
-- Added support for table engines Falcon, Archive, CSV, Blackhole, Federated
-- Changed table editor table engine selection tabsheet
-- Bugfixes
