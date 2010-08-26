@@ -7,11 +7,11 @@
 # Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
 
-. /etc/slack-package.conf
+. ../slack-package.conf
 
 NAME=mysql-gui-tools
-VERSION='5.0r12'
-BUILD=1
+VERSION='5.0r14'
+BUILD=${BUILD:-1}
 ARCH=${ARCH:-i486}
 
 CWD=${CWD:-`pwd`}
@@ -45,21 +45,20 @@ mkdir -p $PKG
 
 # Extract the sources
 cd $TMP
-tar -xvzf $CWD/$NAME-$VERSION.tar.gz || exit 3
+tar -xvf $CWD/$NAME-$VERSION.tar.gz || exit 3
 cd $SRC
 fix_source
 
 # Apply patches
 # For more info on this patch, please visit http://bugs.mysql.com/bug.php?id=22663
-patch -p1 -b -z .orig < $CWD/$NAME-$VERSION-patch.diff
+patch -p1 -b -z .orig < $CWD/$NAME-$VERSION.diff
 
 # Build all tools by default
-#SUBPACKS='mysql-gui-common mysql-administrator mysql-query-browser mysql-workbench mysql-migration-tool'
-SUBPACKS='mysql-gui-common mysql-administrator mysql-query-browser'
+SUBPACKS='common administrator query-browser'
 for PACK in $SUBPACKS; do
   cd $SRC/$PACK
   case "$PACK" in
-    'mysql-gui-common')
+    'common')
       echo_info 'Reconfiguring' $PACK
       # This for sure will return error, but it doesn't matter
       autoreconf -i --force
@@ -83,7 +82,7 @@ for PACK in $SUBPACKS; do
 #                 --with-lua-includes=/usr/include/lua/5.1 \
 #                 --with-lua-libs=/usr/lib/lua/5.1
     ;;
-    'mysql-query-browser')
+    'query-browser')
       echo_conf $PACK
 
       CFLAGS=$SLKCFLAGS \
@@ -93,7 +92,7 @@ for PACK in $SUBPACKS; do
                  --prefix=/usr \
                  --with-gtkhtml=libgtkhtml-2.0 || exit 4
     ;;
-    'mysql-migration-tool')
+    'migration-tool')
       echo_build $PACK
 
       ./build_mt_script.sh || exit 4
@@ -109,12 +108,12 @@ for PACK in $SUBPACKS; do
   esac
 
 
-  if [ "$PACK" = "mysql-migration-tool" ]; then
+  if [ "$PACK" = "migration-tool" ]; then
     echo_install $PACK
 
     # Specific Migration tool installation
-    MIGVER=$(grep version= $SRC/mysql-migration-tool/source/scripts/MigrationScript.lua | sed -e 's/.*"\([^"]*\)".*/\1/')
-    MIGSRC=$SRC/mysql-migration-tool/mysql-migration-toolkit-script-${MIGVER}
+    MIGVER=$(grep version= $SRC/migration-tool/source/scripts/MigrationScript.lua | sed -e 's/.*"\([^"]*\)".*/\1/')
+    MIGSRC=$SRC/migration-tool/mysql-migration-toolkit-script-${MIGVER}
 
     # a) Install binaries
     install -m 755 $MIGSRC/grtsh                $PKG/usr/bin
@@ -147,10 +146,6 @@ install -m 644 $PKG/usr/doc/$NAME-$VERSION/mysql-administrator/COPYING \
                $PKG/usr/doc/$NAME-$VERSION/COPYING
 install -m 644 $CWD/README.in $PKG/usr/doc/$NAME-$VERSION/README
 
-# Fix migration tool startup scripts
-#TMPDIR=$TMP patch $PKG/usr/bin/run_migration        < $CWD/run_migration.diff
-#TMPDIR=$TMP patch $PKG/usr/bin/run_migration_simple < $CWD/run_migration_simple.diff
-
 echo_info 'Preparing package' $NAME
 
 # Copy service info
@@ -161,14 +156,12 @@ install -m 644 $CWD/slack-suggests $PKG/install/slack-suggests
 
 SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
 install -m 755 -d $SBDIR
-install -m 644 $CWD/README.in                 $SBDIR/README.in
-install -m 644 $CWD/slack-desc                $SBDIR/slack-desc
-install -m 644 $CWD/slack-required            $SBDIR/slack-required
-install -m 644 $CWD/slack-suggests            $SBDIR/slack-suggests
-install -m 644 $CWD/$NAME.SlackBuild          $SBDIR/$NAME.SlackBuild
-install -m 644 $CWD/$NAME-$VERSION-patch.diff $SBDIR/$NAME-$VERSION-patch.diff
-#install -m 644 $CWD/run_migration.diff        $SBDIR/run_migration.diff
-#install -m 644 $CWD/run_migration_simple.diff $SBDIR/run_migration_simple.diff
+install -m 644 $CWD/README.in           $SBDIR/README.in
+install -m 644 $CWD/slack-desc          $SBDIR/slack-desc
+install -m 644 $CWD/slack-required      $SBDIR/slack-required
+install -m 644 $CWD/slack-suggests      $SBDIR/slack-suggests
+install -m 644 $CWD/$NAME.SlackBuild    $SBDIR/$NAME.SlackBuild
+install -m 644 $CWD/$NAME-$VERSION.diff $SBDIR/$NAME-$VERSION-patch.diff
 
 # Fix permissions
 chown -R root.root $PKG
