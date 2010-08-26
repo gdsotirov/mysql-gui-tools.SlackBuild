@@ -1,0 +1,14 @@
+diff -N -r -U 3 mysql-gui-tools-5.0r14-orig/query-browser/source/linux/MQQueryDispatcher.cc mysql-gui-tools-5.0r14/query-browser/source/linux/MQQueryDispatcher.cc
+--- mysql-gui-tools-5.0r14-orig/query-browser/source/linux/MQQueryDispatcher.cc	2007-04-27 16:11:32.000000000 +0300
++++ mysql-gui-tools-5.0r14/query-browser/source/linux/MQQueryDispatcher.cc	2010-08-26 19:17:01.000000000 +0300
+@@ -558,8 +558,8 @@
+ 
+   Gtk::Main::instance()->run();
+ 
+-  while(!req->is_complete())
+-    ;
++  //while(!req->is_complete())
++  //  ;
+ 
+   return sps;
+ }
