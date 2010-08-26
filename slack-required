@@ -1,8 +1,8 @@
 cairomm >= 1.4.6
-glibmm >= 2.12.10
-gtkmm >= 2.10.11
-jre >= 1.6.0
-libglade >= 2.6.1
-libgtkhtml >= 2.11.0
+glibmm >= 2.16
+gtkmm >= 2.12
+jre >= 6u11
+libglade >= 2.6.3
+libgtkhtml >= 2.11
 mysql >= 5.0
-openssl >= 0.9.8e | openssl-solibs >= 0.9.8e
+openssl >= 0.9.8i | openssl-solibs >= 0.9.8i
